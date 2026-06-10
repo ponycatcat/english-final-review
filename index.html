@@ -7,7 +7,7 @@
 <style>
   :root{
     --bg:#0f1226; --bg2:#171a37; --card:#1e2247; --card2:#252a55;
-    --accent:#6c8cff; --accent2:#9b6cff; --good:#3ddc97; --warn:#ffcc66;
+    --accent:#6c8cff; --accent2:#9b6cff; --good:#3ddc97; --warn:#ffcc66; --bad:#ff6b6b;
     --text:#eef1ff; --muted:#9aa3cf; --line:#2c326a;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -18,81 +18,117 @@
   }
   header{
     position:sticky; top:0; z-index:50;
-    background:rgba(15,18,38,.85); backdrop-filter:blur(12px);
-    border-bottom:1px solid var(--line); padding:18px 20px 14px;
+    background:rgba(15,18,38,.88); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line); padding:16px 20px 12px;
   }
-  h1{font-size:1.5rem; display:flex; align-items:center; gap:10px}
-  h1 .emoji{font-size:1.7rem}
-  .sub{color:var(--muted); font-size:.85rem; margin-top:4px}
-  .controls{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; align-items:center}
+  h1{font-size:1.4rem; display:flex; align-items:center; gap:10px}
+  h1 .emoji{font-size:1.6rem}
+  .sub{color:var(--muted); font-size:.82rem; margin-top:4px}
   .search{
-    flex:1; min-width:200px; background:var(--card); border:1px solid var(--line);
+    width:100%; margin-top:12px; background:var(--card); border:1px solid var(--line);
     color:var(--text); padding:10px 14px; border-radius:12px; font-size:.95rem;
   }
   .search:focus{outline:none; border-color:var(--accent)}
-  .tabs{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+  .tabs,.modes{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center}
+  .modes{margin-top:8px}
+  .modes .label{color:var(--muted); font-size:.82rem; margin-right:2px}
   .tab,.mode-btn{
     background:var(--card); border:1px solid var(--line); color:var(--muted);
-    padding:8px 16px; border-radius:999px; cursor:pointer; font-size:.9rem;
+    padding:7px 15px; border-radius:999px; cursor:pointer; font-size:.88rem;
     transition:.2s; font-weight:600;
   }
   .tab:hover,.mode-btn:hover{border-color:var(--accent); color:var(--text)}
   .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-color:transparent}
   .mode-btn.active{background:var(--good); color:#06291c; border-color:transparent}
-  .modes{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; align-items:center}
-  .modes .label{color:var(--muted); font-size:.85rem; margin-right:4px}
-  main{max-width:1100px; margin:0 auto; padding:22px 18px}
-  .count{color:var(--muted); font-size:.85rem; margin:6px 2px 16px}
-  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:16px}
+  .mode-btn .badge{
+    display:inline-block; min-width:18px; padding:0 5px; margin-left:5px; border-radius:999px;
+    background:var(--bad); color:#fff; font-size:.72rem; line-height:18px; text-align:center; font-weight:700;
+  }
+  .mode-btn.active .badge{background:rgba(0,0,0,.25); color:#06291c}
+  main{max-width:1100px; margin:0 auto; padding:18px}
+  /* toolbar */
+  .toolbar{margin-bottom:14px}
+  .stages{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px}
+  .stage{
+    background:var(--bg2); border:1px solid var(--line); color:var(--muted);
+    padding:5px 12px; border-radius:9px; cursor:pointer; font-size:.82rem; font-weight:600; transition:.15s;
+  }
+  .stage:hover{border-color:var(--accent); color:var(--text)}
+  .stage.active{background:var(--accent); color:#fff; border-color:transparent}
+  .stage.done{color:var(--good); border-color:rgba(61,220,151,.4)}
+  .stage.active.done{background:var(--good); color:#06291c}
+  .filterbar{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+  .rf{background:var(--bg2); border:1px solid var(--line); color:var(--muted); padding:5px 12px; border-radius:9px; cursor:pointer; font-size:.82rem; font-weight:600}
+  .rf.active{background:var(--accent2); color:#fff; border-color:transparent}
+  .progress-wrap{flex:1; min-width:160px; display:flex; align-items:center; gap:10px}
+  .bar{flex:1; height:9px; background:var(--bg2); border-radius:999px; overflow:hidden; border:1px solid var(--line)}
+  .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--good),#7af0c0); transition:width .4s}
+  .ptext{color:var(--muted); font-size:.8rem; white-space:nowrap}
+  .tiny-link{background:none; border:none; color:var(--muted); font-size:.78rem; cursor:pointer; text-decoration:underline; padding:2px}
+  .tiny-link:hover{color:var(--bad)}
+  .count{color:var(--muted); font-size:.84rem; margin:4px 2px 14px}
+  /* list cards */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px}
   .card{
     background:linear-gradient(155deg,var(--card),var(--card2));
-    border:1px solid var(--line); border-radius:16px; padding:18px 18px 16px;
-    transition:.2s; position:relative; overflow:hidden;
+    border:1px solid var(--line); border-radius:16px; padding:18px; transition:.2s; position:relative;
   }
   .card:hover{transform:translateY(-3px); border-color:var(--accent); box-shadow:0 10px 30px rgba(108,140,255,.18)}
-  .card .unit-badge{
-    position:absolute; top:14px; right:14px; font-size:.68rem; color:var(--muted);
-    background:rgba(108,140,255,.12); padding:3px 9px; border-radius:999px; border:1px solid var(--line);
+  .card.read{opacity:.62}
+  .card.read::before{
+    content:"✓ 已讀"; position:absolute; top:0; left:0; background:var(--good); color:#06291c;
+    font-size:.66rem; font-weight:800; padding:2px 8px; border-radius:16px 0 12px 0;
   }
-  .word{font-size:1.25rem; font-weight:700; color:#fff; padding-right:60px}
-  .pos{color:var(--accent); font-size:.8rem; font-weight:600; margin-top:2px}
-  .mean{color:var(--text); margin-top:10px; font-size:.96rem; line-height:1.5}
-  .ex{
-    margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);
-    font-size:.9rem; line-height:1.6;
-  }
-  .ex .en{color:#dfe5ff}
-  .ex .en b{color:var(--warn); font-weight:700}
+  .unit-badge{position:absolute; top:13px; right:13px; font-size:.66rem; color:var(--muted);
+    background:rgba(108,140,255,.12); padding:3px 9px; border-radius:999px; border:1px solid var(--line)}
+  .word{font-size:1.2rem; font-weight:700; color:#fff; padding-right:54px; margin-top:6px}
+  .pos{color:var(--accent); font-size:.78rem; font-weight:600; margin-top:2px}
+  .mean{color:var(--text); margin-top:10px; font-size:.94rem; line-height:1.5}
+  .ex{margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:.88rem; line-height:1.6}
+  .ex .en{color:#dfe5ff} .ex .en b{color:var(--warn); font-weight:700}
   .ex .zh{color:var(--muted); margin-top:4px}
-  .ex-label{font-size:.7rem; color:var(--good); font-weight:700; letter-spacing:.5px; display:block; margin-bottom:4px}
-  /* flashcard mode */
-  body.flash .mean,body.flash .ex{display:none}
-  body.flash .card{cursor:pointer}
-  body.flash .card.revealed .mean,body.flash .card.revealed .ex{display:block}
-  body.flash .card::after{
-    content:"👆 點擊看解釋與例句"; position:absolute; bottom:14px; left:18px;
-    color:var(--muted); font-size:.78rem;
+  .ex-label{font-size:.68rem; color:var(--good); font-weight:700; letter-spacing:.5px; display:block; margin-bottom:4px}
+  .read-btn{
+    margin-top:14px; width:100%; background:var(--bg2); border:1px solid var(--line); color:var(--muted);
+    padding:8px; border-radius:10px; cursor:pointer; font-size:.85rem; font-weight:600; transition:.15s;
   }
-  body.flash .card.revealed::after{display:none}
-  .empty{text-align:center; color:var(--muted); padding:60px 20px; font-size:1rem}
+  .read-btn:hover{border-color:var(--good); color:var(--good)}
+  .card.read .read-btn{background:rgba(61,220,151,.14); border-color:var(--good); color:var(--good)}
+  /* flip cards */
+  .flip-card{perspective:1200px; height:240px; cursor:pointer}
+  .flip-inner{position:relative; width:100%; height:100%; transition:transform .6s; transform-style:preserve-3d}
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+  .flip-front,.flip-back{
+    position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:16px; border:1px solid var(--line); padding:18px;
+    display:flex; flex-direction:column; justify-content:center; overflow:auto;
+  }
+  .flip-front{background:linear-gradient(155deg,#252a55,#1e2247); align-items:center; text-align:center}
+  .flip-front .word{padding:0; font-size:1.5rem}
+  .flip-front .pos{margin-top:6px}
+  .flip-hint{position:absolute; bottom:12px; left:0; right:0; text-align:center; color:var(--muted); font-size:.74rem}
+  .flip-back{background:linear-gradient(155deg,#202a4a,#1b2342); transform:rotateY(180deg)}
+  .flip-back .mean{margin-top:0; font-size:1rem; font-weight:600}
+  .flip-card.read .flip-front{box-shadow:inset 0 0 0 2px var(--good)}
   /* quiz */
-  #quiz{max-width:620px; margin:10px auto}
-  .quiz-box{background:linear-gradient(155deg,var(--card),var(--card2)); border:1px solid var(--line); border-radius:18px; padding:26px}
-  .quiz-q{font-size:1.15rem; margin-bottom:6px}
+  #quiz{max-width:620px; margin:0 auto}
+  .quiz-box{background:linear-gradient(155deg,var(--card),var(--card2)); border:1px solid var(--line); border-radius:18px; padding:24px}
+  .quiz-q{font-size:1.12rem; margin-bottom:6px}
   .quiz-q b{color:var(--warn)}
-  .quiz-hint{color:var(--muted); font-size:.85rem; margin-bottom:18px}
-  .opt{
-    display:block; width:100%; text-align:left; background:var(--bg2); border:1px solid var(--line);
-    color:var(--text); padding:13px 16px; border-radius:12px; margin-bottom:10px; cursor:pointer;
-    font-size:.95rem; transition:.15s;
-  }
+  .quiz-hint{color:var(--muted); font-size:.84rem; margin-bottom:16px}
+  .opt{display:block; width:100%; text-align:left; background:var(--bg2); border:1px solid var(--line); color:var(--text);
+    padding:13px 16px; border-radius:12px; margin-bottom:10px; cursor:pointer; font-size:.94rem; transition:.15s}
   .opt:hover{border-color:var(--accent)}
   .opt.correct{background:rgba(61,220,151,.18); border-color:var(--good); color:var(--good)}
-  .opt.wrong{background:rgba(255,90,90,.15); border-color:#ff6b6b; color:#ff9b9b}
-  .quiz-foot{display:flex; justify-content:space-between; align-items:center; margin-top:14px}
-  .score{color:var(--muted); font-size:.9rem}
-  .next-btn{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; padding:10px 22px; border-radius:12px; cursor:pointer; font-weight:600; font-size:.92rem}
+  .opt.wrong{background:rgba(255,107,107,.16); border-color:var(--bad); color:#ff9b9b}
+  .quiz-foot{display:flex; justify-content:space-between; align-items:center; margin-top:14px; gap:10px}
+  .score{color:var(--muted); font-size:.88rem}
+  .next-btn{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; padding:10px 22px; border-radius:12px; cursor:pointer; font-weight:600; font-size:.9rem}
   .next-btn:hover{opacity:.9}
+  .note{font-size:.8rem; margin-top:10px; padding:8px 12px; border-radius:10px; text-align:center}
+  .note.add{background:rgba(255,107,107,.12); color:#ff9b9b}
+  .note.fix{background:rgba(61,220,151,.14); color:var(--good)}
+  .empty{text-align:center; color:var(--muted); padding:60px 20px; font-size:1rem; line-height:1.7}
   .hidden{display:none !important}
   footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:40px; padding:0 20px}
 </style>
@@ -100,26 +136,42 @@
 <body>
 <header>
   <h1><span class="emoji">📚</span>英文期末複習 · Data / Culture / Performance</h1>
-  <div class="sub">Units 12–14 · 點單元切換，附中英例句、單字卡與小測驗 — 加油！💪</div>
-  <div class="controls">
-    <input class="search" id="search" placeholder="🔍 搜尋單字、中文意思或例句…">
-  </div>
+  <div class="sub">Units 12–14 · 進度與錯題會自動存在這台裝置，下次打開還在 💾</div>
+  <input class="search" id="search" placeholder="🔍 搜尋單字、中文意思或例句…">
   <div class="tabs" id="tabs"></div>
   <div class="modes">
     <span class="label">模式：</span>
-    <button class="mode-btn active" data-mode="list">📖 瀏覽</button>
-    <button class="mode-btn" data-mode="flash">🃏 單字卡</button>
-    <button class="mode-btn" data-mode="quiz">📝 小測驗</button>
+    <button class="mode-btn active" data-mode="list">📖 閱讀</button>
+    <button class="mode-btn" data-mode="flip">🃏 翻牌</button>
+    <button class="mode-btn" data-mode="quiz">📝 測驗</button>
+    <button class="mode-btn" data-mode="wrong">❌ 錯題本<span class="badge hidden" id="wrongBadge">0</span></button>
   </div>
 </header>
 
 <main>
+  <div class="toolbar" id="toolbar">
+    <div class="stages" id="stages"></div>
+    <div class="filterbar" id="filterbar">
+      <button class="rf active" data-rf="all">全部</button>
+      <button class="rf" data-rf="unread">只看未讀</button>
+      <button class="rf" data-rf="read">只看已讀</button>
+      <div class="progress-wrap">
+        <div class="bar"><i id="barFill"></i></div>
+        <span class="ptext" id="ptext"></span>
+      </div>
+    </div>
+  </div>
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
   <div id="quiz" class="hidden"></div>
 </main>
 
-<footer>做得好就多看幾次，看膩了就玩單字卡或測驗換換腦袋 ✨ · 共 <span id="total"></span> 個單字</footer>
+<footer>
+  讀完一段就標「已讀」，測驗錯的會進錯題本 — 一步步來，期末沒問題 ✨<br>
+  <button class="tiny-link" id="clearRead">清除已讀進度</button> ·
+  <button class="tiny-link" id="clearWrong">清空錯題本</button> ·
+  共 <span id="total"></span> 個單字
+</footer>
 
 <script>
 const DATA = [
@@ -197,21 +249,29 @@ const DATA = [
 {u:14,w:"neutrality",pos:"n.",m:"中立、中立狀態",en:"The mediator kept strict <b>neutrality</b> during the dispute.",zh:"調解人在爭議中保持嚴格的中立。"},
 ];
 
-/* ---------- render ---------- */
-const grid=document.getElementById('grid');
-const quizEl=document.getElementById('quiz');
-const tabsEl=document.getElementById('tabs');
-const countEl=document.getElementById('count');
-const searchEl=document.getElementById('search');
+/* ---------- persistence ---------- */
+const LS_READ='efr_read_v1', LS_WRONG='efr_wrong_v1';
+function load(k){try{return new Set(JSON.parse(localStorage.getItem(k)||'[]'));}catch(e){return new Set();}}
+function save(k,set){try{localStorage.setItem(k,JSON.stringify([...set]));}catch(e){}}
+let readSet=load(LS_READ), wrongSet=load(LS_WRONG);
+
+/* ---------- state ---------- */
+const STAGE_SIZE=8;
+let curUnit='all', curMode='list', curStage='all', readFilter='all';
+
+/* ---------- elements ---------- */
+const grid=document.getElementById('grid'), quizEl=document.getElementById('quiz');
+const tabsEl=document.getElementById('tabs'), countEl=document.getElementById('count');
+const searchEl=document.getElementById('search'), toolbar=document.getElementById('toolbar');
+const stagesEl=document.getElementById('stages'), barFill=document.getElementById('barFill'), ptext=document.getElementById('ptext');
+const wrongBadge=document.getElementById('wrongBadge');
 document.getElementById('total').textContent=DATA.length;
 
 const UNITS=[{u:'all',n:'全部'},{u:12,n:'U12 Data 數據'},{u:13,n:'U13 Culture 文化'},{u:14,n:'U14 Performance 績效'}];
-let curUnit='all', curMode='list';
-
 UNITS.forEach((t,i)=>{
   const b=document.createElement('button');
   b.className='tab'+(i===0?' active':''); b.textContent=t.n; b.dataset.u=t.u;
-  b.onclick=()=>{curUnit=t.u; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render();};
+  b.onclick=()=>{curUnit=t.u; curStage='all'; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render();};
   tabsEl.appendChild(b);
 });
 
@@ -220,89 +280,175 @@ document.querySelectorAll('.mode-btn').forEach(b=>{
     curMode=b.dataset.mode;
     document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    document.body.classList.toggle('flash',curMode==='flash');
-    if(curMode==='quiz'){grid.classList.add('hidden'); quizEl.classList.remove('hidden'); startQuiz();}
-    else{grid.classList.remove('hidden'); quizEl.classList.add('hidden'); render();}
+    render();
   };
 });
 
-function filtered(){
+document.querySelectorAll('.rf').forEach(b=>{
+  b.onclick=()=>{readFilter=b.dataset.rf; document.querySelectorAll('.rf').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render();};
+});
+
+/* ---------- helpers ---------- */
+function unitWords(){ return curUnit==='all'?DATA:DATA.filter(d=>d.u==curUnit); }
+function stagesOf(){ const ws=unitWords(); const out=[]; for(let i=0;i<ws.length;i+=STAGE_SIZE) out.push(ws.slice(i,i+STAGE_SIZE)); return out; }
+function scopeWords(){
+  let ws=unitWords();
+  if(curUnit!=='all' && curStage!=='all'){ const st=stagesOf()[curStage]; ws=st||ws; }
+  return ws;
+}
+function visibleWords(){
+  let ws=scopeWords();
+  if(readFilter==='unread') ws=ws.filter(d=>!readSet.has(d.w));
+  if(readFilter==='read') ws=ws.filter(d=>readSet.has(d.w));
   const q=searchEl.value.trim().toLowerCase();
-  return DATA.filter(d=>{
-    if(curUnit!=='all' && d.u!=curUnit) return false;
-    if(!q) return true;
-    return (d.w+d.m+d.en+d.zh).toLowerCase().includes(q);
+  if(q) ws=ws.filter(d=>(d.w+d.m+d.en+d.zh).toLowerCase().includes(q));
+  return ws;
+}
+function updateWrongBadge(){
+  if(wrongSet.size){wrongBadge.textContent=wrongSet.size; wrongBadge.classList.remove('hidden');}
+  else wrongBadge.classList.add('hidden');
+}
+
+/* ---------- render dispatcher ---------- */
+function render(){
+  updateWrongBadge();
+  quizEl.classList.add('hidden'); grid.classList.add('hidden');
+  if(curMode==='quiz'){ toolbar.classList.add('hidden'); quizEl.classList.remove('hidden'); startQuiz(); return; }
+  if(curMode==='wrong'){ toolbar.classList.add('hidden'); grid.classList.remove('hidden'); renderWrong(); return; }
+  // list or flip
+  toolbar.classList.remove('hidden'); grid.classList.remove('hidden');
+  renderStages(); renderProgress(); renderCards();
+}
+
+function renderStages(){
+  stagesEl.innerHTML='';
+  if(curUnit==='all'){ stagesEl.classList.add('hidden'); return; }
+  stagesEl.classList.remove('hidden');
+  const sts=stagesOf();
+  const mk=(label,val,done)=>{
+    const b=document.createElement('button');
+    b.className='stage'+(curStage===val?' active':'')+(done?' done':'');
+    b.textContent=label; b.onclick=()=>{curStage=val; render();}; stagesEl.appendChild(b);
+  };
+  mk('全部段落','all', sts.every(st=>st.every(d=>readSet.has(d.w))));
+  sts.forEach((st,i)=>{ const done=st.every(d=>readSet.has(d.w)); mk(`第${i+1}段${done?' ✓':''}`,i,done); });
+}
+
+function renderProgress(){
+  const sc=scopeWords(); const read=sc.filter(d=>readSet.has(d.w)).length;
+  const pct=sc.length?Math.round(read/sc.length*100):0;
+  barFill.style.width=pct+'%';
+  ptext.textContent=`已讀 ${read} / ${sc.length}（${pct}%）`;
+}
+
+function exHtml(d){ return `<div class="ex"><span class="ex-label">✍️ 例句</span><div class="en">${d.en}</div><div class="zh">${d.zh}</div></div>`; }
+
+function renderCards(){
+  const list=visibleWords();
+  countEl.textContent=`顯示 ${list.length} 個單字`+(curMode==='flip'?' · 點卡片翻面 🔄':'');
+  grid.innerHTML='';
+  if(!list.length){ grid.innerHTML='<div class="empty">😶 這個範圍沒有符合的單字。<br>試試切換段落、清除搜尋，或改成「全部」。</div>'; return; }
+  list.forEach(d=>{
+    const isRead=readSet.has(d.w);
+    if(curMode==='flip'){
+      const c=document.createElement('div');
+      c.className='flip-card'+(isRead?' read':'');
+      c.innerHTML=`<div class="flip-inner">
+        <div class="flip-front"><div class="word">${d.w}</div><div class="pos">${d.pos}</div><div class="flip-hint">👆 點一下翻牌看答案</div></div>
+        <div class="flip-back"><div class="mean">${d.m}</div>${exHtml(d)}
+          <button class="read-btn">${isRead?'✓ 已讀（點此取消）':'標記為已讀'}</button></div>
+      </div>`;
+      c.onclick=()=>c.classList.toggle('flipped');
+      c.querySelector('.read-btn').onclick=(e)=>{e.stopPropagation(); toggleRead(d.w);};
+      grid.appendChild(c);
+    }else{
+      const c=document.createElement('div');
+      c.className='card'+(isRead?' read':'');
+      c.innerHTML=`<span class="unit-badge">U${d.u}</span>
+        <div class="word">${d.w}</div><div class="pos">${d.pos}</div>
+        <div class="mean">${d.m}</div>${exHtml(d)}
+        <button class="read-btn">${isRead?'✓ 已讀（點此取消）':'標記為已讀'}</button>`;
+      c.querySelector('.read-btn').onclick=()=>toggleRead(d.w);
+      grid.appendChild(c);
+    }
   });
 }
 
-function render(){
-  const list=filtered();
-  countEl.textContent=`顯示 ${list.length} 個單字`+(curMode==='flash'?' · 🃏 單字卡模式：先想答案，再點卡片揭曉':'');
+function toggleRead(w){ if(readSet.has(w))readSet.delete(w); else readSet.add(w); save(LS_READ,readSet); render(); }
+
+/* ---------- 錯題本 ---------- */
+function renderWrong(){
+  toolbar.classList.add('hidden');
+  const list=DATA.filter(d=>wrongSet.has(d.w));
+  if(!list.length){ countEl.textContent=''; grid.innerHTML='<div class="empty">🎉 錯題本是空的！<br>去「測驗」挑戰看看，答錯的單字會自動收集到這裡。</div>'; return; }
+  countEl.innerHTML=`錯題共 <b style="color:var(--bad)">${list.length}</b> 個 — `+
+    `<button class="next-btn" id="reQuiz" style="padding:6px 16px;font-size:.84rem">▶️ 只測驗錯題</button>`;
+  document.getElementById('reQuiz').onclick=()=>{ document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode==='quiz')); curMode='quiz'; quizFromWrong=true; render(); };
   grid.innerHTML='';
-  if(!list.length){grid.innerHTML='<div class="empty">😶 找不到符合的單字，換個關鍵字試試。</div>';return;}
   list.forEach(d=>{
-    const c=document.createElement('div');
-    c.className='card';
-    c.innerHTML=`
-      <span class="unit-badge">U${d.u}</span>
-      <div class="word">${d.w}</div>
-      <div class="pos">${d.pos}</div>
-      <div class="mean">${d.m}</div>
-      <div class="ex"><span class="ex-label">✍️ 例句</span>
-        <div class="en">${d.en}</div>
-        <div class="zh">${d.zh}</div>
-      </div>`;
-    if(curMode==='flash') c.onclick=()=>c.classList.toggle('revealed');
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<span class="unit-badge">U${d.u}</span>
+      <div class="word">${d.w}</div><div class="pos">${d.pos}</div>
+      <div class="mean">${d.m}</div>${exHtml(d)}
+      <button class="read-btn" style="border-color:var(--good);color:var(--good)">✓ 已訂正，移出錯題本</button>`;
+    c.querySelector('.read-btn').onclick=()=>{ wrongSet.delete(d.w); save(LS_WRONG,wrongSet); render(); };
     grid.appendChild(c);
   });
 }
 
 /* ---------- quiz ---------- */
-let qPool=[], qIndex=0, qScore=0, qTotal=0;
+let qPool=[], qIndex=0, qScore=0, qTotal=0, quizFromWrong=false;
 function startQuiz(){
-  qPool=filtered().slice();
-  if(qPool.length<4){
-    quizEl.innerHTML='<div class="quiz-box"><div class="quiz-q">這個範圍的單字太少，無法出題 🙈</div><div class="quiz-hint">請切換到「全部」或單一單元（至少需要 4 個單字）。</div></div>';
-    return;
+  let pool = quizFromWrong ? DATA.filter(d=>wrongSet.has(d.w)) : visibleWords();
+  if(pool.length<4){
+    quizEl.innerHTML=`<div class="quiz-box"><div class="quiz-q">${quizFromWrong?'錯題':'這個範圍'}的單字太少，無法出題 🙈</div>
+      <div class="quiz-hint">選擇題需要至少 4 個單字。請切換到「全部」單元，或先去測驗累積一些錯題。</div></div>`;
+    quizFromWrong=false; return;
   }
-  qPool=shuffle(qPool); qIndex=0; qScore=0; qTotal=0;
-  showQuestion();
+  qPool=shuffle(pool); qIndex=0; qScore=0; qTotal=0; showQuestion();
 }
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function showQuestion(){
-  if(qIndex>=qPool.length) qPool=shuffle(qPool), qIndex=0;
+  if(qIndex>=qPool.length){ qPool=shuffle(qPool); qIndex=0; }
   const correct=qPool[qIndex];
   const wrongs=shuffle(DATA.filter(d=>d.w!==correct.w)).slice(0,3);
   const opts=shuffle([correct,...wrongs]);
-  quizEl.innerHTML=`
-    <div class="quiz-box">
-      <div class="quiz-q">這個字的意思是？ <b>${correct.w}</b> <span style="color:var(--muted);font-size:.85rem">(${correct.pos})</span></div>
-      <div class="quiz-hint">U${correct.u} · 選出正確的中文意思</div>
+  quizEl.innerHTML=`<div class="quiz-box">
+      <div class="quiz-q">${correct.w} <span style="color:var(--muted);font-size:.85rem">(${correct.pos})</span></div>
+      <div class="quiz-hint">${quizFromWrong?'🔁 錯題複習 · ':''}U${correct.u} · 選出正確的中文意思</div>
       <div id="opts"></div>
-      <div class="quiz-foot">
-        <span class="score">得分：${qScore} / ${qTotal}</span>
-        <button class="next-btn hidden" id="next">下一題 →</button>
-      </div>
+      <div id="note"></div>
+      <div class="quiz-foot"><span class="score">得分：${qScore} / ${qTotal}　|　錯題本：${wrongSet.size}</span>
+        <button class="next-btn hidden" id="next">下一題 →</button></div>
     </div>`;
-  const optsBox=document.getElementById('opts');
+  const optsBox=document.getElementById('opts'), noteBox=document.getElementById('note');
   opts.forEach(o=>{
-    const b=document.createElement('button');
-    b.className='opt'; b.textContent=o.m;
+    const b=document.createElement('button'); b.className='opt'; b.textContent=o.m;
     b.onclick=()=>{
-      if(optsBox.dataset.done) return;
-      optsBox.dataset.done='1'; qTotal++;
-      if(o.w===correct.w){b.classList.add('correct'); qScore++;}
-      else{b.classList.add('wrong');
-        [...optsBox.children].forEach(x=>{if(x.textContent===correct.m)x.classList.add('correct');});}
-      document.querySelector('.score').textContent=`得分：${qScore} / ${qTotal}`;
+      if(optsBox.dataset.done) return; optsBox.dataset.done='1'; qTotal++;
+      if(o.w===correct.w){
+        b.classList.add('correct'); qScore++;
+        if(quizFromWrong){ wrongSet.delete(correct.w); save(LS_WRONG,wrongSet); noteBox.innerHTML='<div class="note fix">✓ 答對了！已移出錯題本</div>'; }
+      }else{
+        b.classList.add('wrong');
+        [...optsBox.children].forEach(x=>{ if(x.textContent===correct.m) x.classList.add('correct'); });
+        wrongSet.add(correct.w); save(LS_WRONG,wrongSet);
+        noteBox.innerHTML='<div class="note add">❌ 已加入錯題本，記得回來複習</div>';
+      }
+      updateWrongBadge();
+      document.querySelector('.score').textContent=`得分：${qScore} / ${qTotal}　|　錯題本：${wrongSet.size}`;
       document.getElementById('next').classList.remove('hidden');
     };
     optsBox.appendChild(b);
   });
-  document.getElementById('next').onclick=()=>{qIndex++; showQuestion();};
+  document.getElementById('next').onclick=()=>{ qIndex++; showQuestion(); };
 }
 
-searchEl.oninput=()=>{ if(curMode==='quiz') startQuiz(); else render(); };
+/* ---------- footer actions ---------- */
+document.getElementById('clearRead').onclick=()=>{ if(confirm('確定要清除所有「已讀」進度嗎？')){ readSet.clear(); save(LS_READ,readSet); render(); } };
+document.getElementById('clearWrong').onclick=()=>{ if(confirm('確定要清空錯題本嗎？')){ wrongSet.clear(); save(LS_WRONG,wrongSet); render(); } };
+
+searchEl.oninput=()=>render();
 render();
 </script>
 </body>
