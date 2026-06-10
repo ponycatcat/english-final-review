@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英文期末複習 · Units 12–14</title>
+<style>
+  :root{
+    --bg:#0f1226; --bg2:#171a37; --card:#1e2247; --card2:#252a55;
+    --accent:#6c8cff; --accent2:#9b6cff; --good:#3ddc97; --warn:#ffcc66;
+    --text:#eef1ff; --muted:#9aa3cf; --line:#2c326a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Segoe UI","Microsoft JhengHei",system-ui,sans-serif;
+    background:linear-gradient(160deg,var(--bg),#0a0c1c 70%);
+    color:var(--text); min-height:100vh; padding-bottom:60px;
+  }
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(15,18,38,.85); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line); padding:18px 20px 14px;
+  }
+  h1{font-size:1.5rem; display:flex; align-items:center; gap:10px}
+  h1 .emoji{font-size:1.7rem}
+  .sub{color:var(--muted); font-size:.85rem; margin-top:4px}
+  .controls{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; align-items:center}
+  .search{
+    flex:1; min-width:200px; background:var(--card); border:1px solid var(--line);
+    color:var(--text); padding:10px 14px; border-radius:12px; font-size:.95rem;
+  }
+  .search:focus{outline:none; border-color:var(--accent)}
+  .tabs{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+  .tab,.mode-btn{
+    background:var(--card); border:1px solid var(--line); color:var(--muted);
+    padding:8px 16px; border-radius:999px; cursor:pointer; font-size:.9rem;
+    transition:.2s; font-weight:600;
+  }
+  .tab:hover,.mode-btn:hover{border-color:var(--accent); color:var(--text)}
+  .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-color:transparent}
+  .mode-btn.active{background:var(--good); color:#06291c; border-color:transparent}
+  .modes{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; align-items:center}
+  .modes .label{color:var(--muted); font-size:.85rem; margin-right:4px}
+  main{max-width:1100px; margin:0 auto; padding:22px 18px}
+  .count{color:var(--muted); font-size:.85rem; margin:6px 2px 16px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:16px}
+  .card{
+    background:linear-gradient(155deg,var(--card),var(--card2));
+    border:1px solid var(--line); border-radius:16px; padding:18px 18px 16px;
+    transition:.2s; position:relative; overflow:hidden;
+  }
+  .card:hover{transform:translateY(-3px); border-color:var(--accent); box-shadow:0 10px 30px rgba(108,140,255,.18)}
+  .card .unit-badge{
+    position:absolute; top:14px; right:14px; font-size:.68rem; color:var(--muted);
+    background:rgba(108,140,255,.12); padding:3px 9px; border-radius:999px; border:1px solid var(--line);
+  }
+  .word{font-size:1.25rem; font-weight:700; color:#fff; padding-right:60px}
+  .pos{color:var(--accent); font-size:.8rem; font-weight:600; margin-top:2px}
+  .mean{color:var(--text); margin-top:10px; font-size:.96rem; line-height:1.5}
+  .ex{
+    margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);
+    font-size:.9rem; line-height:1.6;
+  }
+  .ex .en{color:#dfe5ff}
+  .ex .en b{color:var(--warn); font-weight:700}
+  .ex .zh{color:var(--muted); margin-top:4px}
+  .ex-label{font-size:.7rem; color:var(--good); font-weight:700; letter-spacing:.5px; display:block; margin-bottom:4px}
+  /* flashcard mode */
+  body.flash .mean,body.flash .ex{display:none}
+  body.flash .card{cursor:pointer}
+  body.flash .card.revealed .mean,body.flash .card.revealed .ex{display:block}
+  body.flash .card::after{
+    content:"👆 點擊看解釋與例句"; position:absolute; bottom:14px; left:18px;
+    color:var(--muted); font-size:.78rem;
+  }
+  body.flash .card.revealed::after{display:none}
+  .empty{text-align:center; color:var(--muted); padding:60px 20px; font-size:1rem}
+  /* quiz */
+  #quiz{max-width:620px; margin:10px auto}
+  .quiz-box{background:linear-gradient(155deg,var(--card),var(--card2)); border:1px solid var(--line); border-radius:18px; padding:26px}
+  .quiz-q{font-size:1.15rem; margin-bottom:6px}
+  .quiz-q b{color:var(--warn)}
+  .quiz-hint{color:var(--muted); font-size:.85rem; margin-bottom:18px}
+  .opt{
+    display:block; width:100%; text-align:left; background:var(--bg2); border:1px solid var(--line);
+    color:var(--text); padding:13px 16px; border-radius:12px; margin-bottom:10px; cursor:pointer;
+    font-size:.95rem; transition:.15s;
+  }
+  .opt:hover{border-color:var(--accent)}
+  .opt.correct{background:rgba(61,220,151,.18); border-color:var(--good); color:var(--good)}
+  .opt.wrong{background:rgba(255,90,90,.15); border-color:#ff6b6b; color:#ff9b9b}
+  .quiz-foot{display:flex; justify-content:space-between; align-items:center; margin-top:14px}
+  .score{color:var(--muted); font-size:.9rem}
+  .next-btn{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; padding:10px 22px; border-radius:12px; cursor:pointer; font-weight:600; font-size:.92rem}
+  .next-btn:hover{opacity:.9}
+  .hidden{display:none !important}
+  footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:40px; padding:0 20px}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="emoji">📚</span>英文期末複習 · Data / Culture / Performance</h1>
+  <div class="sub">Units 12–14 · 點單元切換，附中英例句、單字卡與小測驗 — 加油！💪</div>
+  <div class="controls">
+    <input class="search" id="search" placeholder="🔍 搜尋單字、中文意思或例句…">
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="modes">
+    <span class="label">模式：</span>
+    <button class="mode-btn active" data-mode="list">📖 瀏覽</button>
+    <button class="mode-btn" data-mode="flash">🃏 單字卡</button>
+    <button class="mode-btn" data-mode="quiz">📝 小測驗</button>
+  </div>
+</header>
+
+<main>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div id="quiz" class="hidden"></div>
+</main>
+
+<footer>做得好就多看幾次，看膩了就玩單字卡或測驗換換腦袋 ✨ · 共 <span id="total"></span> 個單字</footer>
+
+<script>
+const DATA = [
+/* ===== Unit 12: Data ===== */
+{u:12,w:"promising",pos:"adj.",m:"有希望的、大有可為的（顯示出將會成功的跡象）",en:"The startup showed <b>promising</b> early results, so investors were keen to put in money.",zh:"這家新創公司展現了大有可為的早期成果，因此投資人很想投錢。"},
+{u:12,w:"compound rate",pos:"n.",m:"複利率（計算本金及已產生利息的利率）",en:"At a <b>compound rate</b> of 5%, your savings grow faster every year.",zh:"以 5% 的複利率計算，你的存款每年成長得越來越快。"},
+{u:12,w:"bottom line",pos:"n.",m:"底線；帳目上顯示總利潤或虧損的最終數字",en:"Cutting costs improved the company's <b>bottom line</b> this quarter.",zh:"削減成本改善了公司這一季的最終獲利數字。"},
+{u:12,w:"more or less",pos:"phr.",m:"大致上、大約、幾乎",en:"The two reports say <b>more or less</b> the same thing.",zh:"這兩份報告大致上說的是同一件事。"},
+{u:12,w:"low-down",pos:"n.",m:"內幕、最重要的事實",en:"Give me the <b>low-down</b> on what really happened at the meeting.",zh:"告訴我會議上真正發生了什麼的內幕。"},
+{u:12,w:"overriding",pos:"adj.",m:"首要的、最重要的",en:"Safety is our <b>overriding</b> concern on every project.",zh:"安全是我們每個專案最首要的考量。"},
+{u:12,w:"click-through",pos:"n.",m:"點擊率；在網頁上點擊廣告或連結的動作",en:"Each <b>click-through</b> takes the user from the ad to the product page.",zh:"每一次點擊都把使用者從廣告帶到產品頁面。"},
+{u:12,w:"substantial",pos:"adj.",m:"大量的、重大的（尺寸、價值或重要性）",en:"The new policy brought a <b>substantial</b> increase in sales.",zh:"新政策帶來了銷售額的大幅增加。"},
+{u:12,w:"data analytics",pos:"n.",m:"數據分析（分析原始數據以發現趨勢，含購物籃分析）",en:"Using <b>data analytics</b>, the store learned which products are often bought together.",zh:"透過數據分析，這家店得知哪些產品常被一起購買。"},
+{u:12,w:"perk",pos:"n.",m:"額外津貼、工作的附帶好處",en:"Free gym membership is a nice <b>perk</b> of this job.",zh:"免費健身房會員是這份工作不錯的福利。"},
+{u:12,w:"traffic flow",pos:"n.",m:"流量；造訪網站的訪客數量",en:"A good headline can double the <b>traffic flow</b> to your website.",zh:"好的標題能讓你網站的流量翻倍。"},
+{u:12,w:"demographic",pos:"adj./n.",m:"人口統計的；具相似年齡或階層的特定族群",en:"This product is aimed at a young <b>demographic</b> aged 18 to 25.",zh:"這項產品鎖定 18 至 25 歲的年輕族群。"},
+{u:12,w:"sophisticated",pos:"adj.",m:"老練的、懂品味的；或機器/方法精密複雜的",en:"The bank uses a <b>sophisticated</b> system to detect fraud.",zh:"這家銀行使用精密複雜的系統來偵測詐騙。"},
+{u:12,w:"disclose",pos:"v.",m:"揭露、公開隱藏的事物",en:"Companies must <b>disclose</b> how they use customers' personal data.",zh:"公司必須揭露他們如何使用顧客的個人資料。"},
+{u:12,w:"abuse",pos:"v.",m:"濫用（用於錯誤目的或不道德的方式）",en:"They were fined for <b>abusing</b> users' private information.",zh:"他們因濫用使用者的私人資訊而被罰款。"},
+{u:12,w:"encrypt",pos:"v.",m:"將電子資訊加密成代碼",en:"All passwords are <b>encrypted</b> before they are stored.",zh:"所有密碼在儲存前都會被加密。"},
+{u:12,w:"CAGR",pos:"n.",m:"複合年均成長率（Compound Annual Growth Rate）",en:"The market grew at a <b>CAGR</b> of 12% over five years.",zh:"這個市場五年來以 12% 的複合年均成長率成長。"},
+{u:12,w:"projected",pos:"adj.",m:"預計的、推算的",en:"The <b>projected</b> revenue for next year is two million dollars.",zh:"明年的預計營收是兩百萬美元。"},
+{u:12,w:"expenditure",pos:"n.",m:"總支出、花費（政府或個人）",en:"The government cut public <b>expenditure</b> to reduce debt.",zh:"政府削減公共支出以減少債務。"},
+{u:12,w:"cross section",pos:"n.",m:"橫截面；代表整體群體的典型樣本",en:"We interviewed a <b>cross section</b> of customers from all age groups.",zh:"我們訪問了來自各年齡層、具代表性的一群顧客。"},
+{u:12,w:"click-through rate",pos:"n.",m:"點擊率（瀏覽者點擊連結前往其他頁面的比例）",en:"A higher <b>click-through rate</b> means the ad is working well.",zh:"較高的點擊率代表這則廣告效果很好。"},
+{u:12,w:"plummet",pos:"v.",m:"暴跌、急遽下降",en:"Sales <b>plummeted</b> after the bad review went viral.",zh:"那則負評爆紅後，銷售額暴跌。"},
+{u:12,w:"stream",pos:"v.",m:"串流播放（透過網路直接聽或看影音）",en:"Most people now <b>stream</b> music instead of buying CDs.",zh:"現在大多數人用串流聽音樂，而不是買 CD。"},
+{u:12,w:"vinyl",pos:"n.",m:"黑膠唱片",en:"Collectors still pay a lot for old <b>vinyl</b> records.",zh:"收藏家仍願意花大錢買舊的黑膠唱片。"},
+{u:12,w:"turntable",pos:"n.",m:"唱盤",en:"He played the album on an antique <b>turntable</b>.",zh:"他用一台古董唱盤播放那張專輯。"},
+{u:12,w:"décor",pos:"n.",m:"室內裝潢、佈置",en:"The café's vintage <b>décor</b> attracts a lot of customers.",zh:"這家咖啡廳的復古裝潢吸引了許多顧客。"},
+{u:12,w:"statisticulation",pos:"n.",m:"以誤導方式使用統計數據",en:"The ad's claim was pure <b>statisticulation</b> designed to fool buyers.",zh:"那則廣告的說法純粹是用來騙買家的誤導性統計。"},
+{u:12,w:"tactic",pos:"n.",m:"策略、手法",en:"Offering a free trial is a clever marketing <b>tactic</b>.",zh:"提供免費試用是個聰明的行銷手法。"},
+{u:12,w:"360 degree appraisal",pos:"n.",m:"360度績效評估（含主管、同事等多方匿名回饋）",en:"In a <b>360 degree appraisal</b>, feedback comes from your boss, peers, and team.",zh:"在360度績效評估中，回饋來自你的主管、同事與團隊。"},
+{u:12,w:"top-down appraisal",pos:"n.",m:"由上而下的傳統績效評估（主管觀察並評估下屬）",en:"A <b>top-down appraisal</b> relies only on the manager's view of the employee.",zh:"由上而下的績效評估只仰賴主管對員工的看法。"},
+
+/* ===== Unit 13: Culture ===== */
+{u:13,w:"intercultural",pos:"adj.",m:"跨文化的",en:"<b>Intercultural</b> training helps staff work with foreign clients.",zh:"跨文化訓練幫助員工與外國客戶合作。"},
+{u:13,w:"hierarchical",pos:"adj.",m:"階級制度的（hierarchy 階級制度）",en:"In a <b>hierarchical</b> company, decisions come from the top.",zh:"在階級制度的公司裡，決策由高層下達。"},
+{u:13,w:"egalitarian",pos:"adj./n.",m:"主張平等的；平等主義者",en:"Their <b>egalitarian</b> culture lets every employee speak freely.",zh:"他們主張平等的文化讓每位員工都能暢所欲言。"},
+{u:13,w:"caste",pos:"n.",m:"印度的種姓制度或社會階級",en:"The ancient <b>caste</b> system divided people into fixed social groups.",zh:"古老的種姓制度將人們劃分成固定的社會階級。"},
+{u:13,w:"liberal",pos:"adj.",m:"開明的、自由的（尊重不同信仰或行為）",en:"She holds <b>liberal</b> views and respects everyone's choices.",zh:"她抱持開明的觀點，尊重每個人的選擇。"},
+{u:13,w:"individualistic",pos:"adj.",m:"個人主義的、獨特的",en:"American culture is often seen as highly <b>individualistic</b>.",zh:"美國文化常被視為高度個人主義的。"},
+{u:13,w:"collectivist",pos:"adj.",m:"集體主義的（主張產業或服務歸集體所有）",en:"In a <b>collectivist</b> society, the group matters more than the individual.",zh:"在集體主義的社會裡，團體比個人更重要。"},
+{u:13,w:"mentality",pos:"n.",m:"心態、思維方式",en:"A 'never give up' <b>mentality</b> helped the team win.",zh:"「永不放棄」的心態幫助團隊獲勝。"},
+{u:13,w:"masculine",pos:"adj.",m:"男性的、陽剛的",en:"The brand uses bold, <b>masculine</b> colours in its ads.",zh:"這個品牌在廣告中使用大膽、陽剛的色彩。"},
+{u:13,w:"feminine",pos:"adj.",m:"女性的、陰柔的",en:"The packaging has a soft, <b>feminine</b> design.",zh:"這個包裝有著柔和、陰柔的設計。"},
+{u:13,w:"assertiveness",pos:"n.",m:"堅定自信、果敢（敢於表達自己想要的）",en:"Her <b>assertiveness</b> in meetings earned her respect.",zh:"她在會議中的果敢自信為她贏得了尊重。"},
+{u:13,w:"accumulation",pos:"n.",m:"累積、積聚",en:"The <b>accumulation</b> of wealth took many years of hard work.",zh:"財富的累積花了許多年的努力。"},
+{u:13,w:"tolerant",pos:"adj.",m:"寬容的、容忍不同行為及信仰的",en:"A good leader is <b>tolerant</b> of different opinions.",zh:"好的領導者能寬容不同的意見。"},
+{u:13,w:"liaise",pos:"v.",m:"聯繫、聯絡（以合作或交換資訊）",en:"She will <b>liaise</b> with the suppliers about delivery dates.",zh:"她會與供應商聯繫交貨日期事宜。"},
+{u:13,w:"vineyard",pos:"n.",m:"葡萄園",en:"They own a small <b>vineyard</b> that produces red wine.",zh:"他們擁有一座生產紅酒的小葡萄園。"},
+{u:13,w:"parlour",pos:"n.",m:"提供特定服務或產品的店舖（如美容院）",en:"She booked an appointment at the beauty <b>parlour</b>.",zh:"她在美容院預約了時段。"},
+{u:13,w:"narrative",pos:"n.",m:"敘事、故事",en:"Every successful brand has a strong <b>narrative</b>.",zh:"每個成功的品牌都有一個強而有力的故事。"},
+{u:13,w:"refreshment",pos:"n.",m:"茶點、飲料",en:"Light <b>refreshments</b> will be served during the break.",zh:"中場休息時會供應簡單的茶點。"},
+{u:13,w:"commence",pos:"v.",m:"開始",en:"The ceremony will <b>commence</b> at nine o'clock sharp.",zh:"典禮將於九點整開始。"},
+{u:13,w:"rumour",pos:"n.",m:"謠言（Rumour has it 據說）",en:"<b>Rumour</b> has it that the company will merge next year.",zh:"據說這家公司明年將會合併。"},
+{u:13,w:"chauffeur",pos:"n./v.",m:"專職司機；開車接送某人",en:"A <b>chauffeur</b> drove the guests from the airport to the hotel.",zh:"一位專職司機開車載送賓客從機場到飯店。"},
+{u:13,w:"boot",pos:"n.",m:"汽車後車廂",en:"He put the luggage in the <b>boot</b> of the car.",zh:"他把行李放進車子的後車廂。"},
+{u:13,w:"wind",pos:"v.",m:"轉動（如搖下車窗 wind the window down）",en:"Please <b>wind</b> the window down; it's hot in here.",zh:"請把車窗搖下來，這裡好熱。"},
+{u:13,w:"pitch",pos:"n./v.",m:"推銷、遊說某人買東西或做某事",en:"She gave a confident sales <b>pitch</b> to the new client.",zh:"她對新客戶做了一場充滿自信的推銷。"},
+{u:13,w:"word-of-mouth",pos:"adj.",m:"口耳相傳的",en:"The restaurant grew popular through <b>word-of-mouth</b> recommendations.",zh:"這家餐廳靠著口耳相傳的推薦而走紅。"},
+
+/* ===== Unit 14: Performance ===== */
+{u:14,w:"criterion / criteria",pos:"n.",m:"準則、標準（單數 / 複數）",en:"Punctuality is one <b>criterion</b> we use to judge performance.",zh:"準時是我們評斷表現的標準之一。"},
+{u:14,w:"appraisal",pos:"n.",m:"評估、鑑定（評斷品質、成功或需求）",en:"Each employee has a yearly performance <b>appraisal</b>.",zh:"每位員工每年都有一次績效評估。"},
+{u:14,w:"dread",pos:"v.",m:"對即將發生的事感到恐懼、擔憂",en:"Many workers <b>dread</b> their annual review.",zh:"許多員工很害怕他們的年度考核。"},
+{u:14,w:"appraiser",pos:"n.",m:"評估者、鑑定人",en:"The <b>appraiser</b> gave honest feedback to each team member.",zh:"評估者給了每位團隊成員誠實的回饋。"},
+{u:14,w:"bear/keep something in mind",pos:"phr.",m:"牢記在心、將某事列入考量",en:"<b>Keep in mind</b> that the deadline is next Friday.",zh:"請牢記截止日期是下週五。"},
+{u:14,w:"appraisee",pos:"n.",m:"受評估的員工或對象",en:"The <b>appraisee</b> was asked to set goals for next year.",zh:"受評估者被要求為明年設定目標。"},
+{u:14,w:"rota / roster",pos:"n.",m:"輪班表、值勤表",en:"Check the <b>rota</b> to see who is working this weekend.",zh:"查看輪班表，看誰這週末上班。"},
+{u:14,w:"constraint",pos:"n.",m:"限制、約束",en:"Time <b>constraints</b> forced us to cut the project short.",zh:"時間限制迫使我們縮短了這個專案。"},
+{u:14,w:"domineering",pos:"adj.",m:"盛氣凌人的、控制慾強的",en:"His <b>domineering</b> manner made the staff afraid to speak.",zh:"他盛氣凌人的態度讓員工不敢開口。"},
+{u:14,w:"phrase",pos:"v.",m:"以特定言辭表達、措辭",en:"Try to <b>phrase</b> your criticism in a positive way.",zh:"試著用正面的方式來措辭你的批評。"},
+{u:14,w:"partition",pos:"n.",m:"隔板、隔間牆",en:"A glass <b>partition</b> divides the office into two areas.",zh:"一道玻璃隔板把辦公室分成兩個區域。"},
+{u:14,w:"neutrality",pos:"n.",m:"中立、中立狀態",en:"The mediator kept strict <b>neutrality</b> during the dispute.",zh:"調解人在爭議中保持嚴格的中立。"},
+];
+
+/* ---------- render ---------- */
+const grid=document.getElementById('grid');
+const quizEl=document.getElementById('quiz');
+const tabsEl=document.getElementById('tabs');
+const countEl=document.getElementById('count');
+const searchEl=document.getElementById('search');
+document.getElementById('total').textContent=DATA.length;
+
+const UNITS=[{u:'all',n:'全部'},{u:12,n:'U12 Data 數據'},{u:13,n:'U13 Culture 文化'},{u:14,n:'U14 Performance 績效'}];
+let curUnit='all', curMode='list';
+
+UNITS.forEach((t,i)=>{
+  const b=document.createElement('button');
+  b.className='tab'+(i===0?' active':''); b.textContent=t.n; b.dataset.u=t.u;
+  b.onclick=()=>{curUnit=t.u; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render();};
+  tabsEl.appendChild(b);
+});
+
+document.querySelectorAll('.mode-btn').forEach(b=>{
+  b.onclick=()=>{
+    curMode=b.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.body.classList.toggle('flash',curMode==='flash');
+    if(curMode==='quiz'){grid.classList.add('hidden'); quizEl.classList.remove('hidden'); startQuiz();}
+    else{grid.classList.remove('hidden'); quizEl.classList.add('hidden'); render();}
+  };
+});
+
+function filtered(){
+  const q=searchEl.value.trim().toLowerCase();
+  return DATA.filter(d=>{
+    if(curUnit!=='all' && d.u!=curUnit) return false;
+    if(!q) return true;
+    return (d.w+d.m+d.en+d.zh).toLowerCase().includes(q);
+  });
+}
+
+function render(){
+  const list=filtered();
+  countEl.textContent=`顯示 ${list.length} 個單字`+(curMode==='flash'?' · 🃏 單字卡模式：先想答案，再點卡片揭曉':'');
+  grid.innerHTML='';
+  if(!list.length){grid.innerHTML='<div class="empty">😶 找不到符合的單字，換個關鍵字試試。</div>';return;}
+  list.forEach(d=>{
+    const c=document.createElement('div');
+    c.className='card';
+    c.innerHTML=`
+      <span class="unit-badge">U${d.u}</span>
+      <div class="word">${d.w}</div>
+      <div class="pos">${d.pos}</div>
+      <div class="mean">${d.m}</div>
+      <div class="ex"><span class="ex-label">✍️ 例句</span>
+        <div class="en">${d.en}</div>
+        <div class="zh">${d.zh}</div>
+      </div>`;
+    if(curMode==='flash') c.onclick=()=>c.classList.toggle('revealed');
+    grid.appendChild(c);
+  });
+}
+
+/* ---------- quiz ---------- */
+let qPool=[], qIndex=0, qScore=0, qTotal=0;
+function startQuiz(){
+  qPool=filtered().slice();
+  if(qPool.length<4){
+    quizEl.innerHTML='<div class="quiz-box"><div class="quiz-q">這個範圍的單字太少，無法出題 🙈</div><div class="quiz-hint">請切換到「全部」或單一單元（至少需要 4 個單字）。</div></div>';
+    return;
+  }
+  qPool=shuffle(qPool); qIndex=0; qScore=0; qTotal=0;
+  showQuestion();
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function showQuestion(){
+  if(qIndex>=qPool.length) qPool=shuffle(qPool), qIndex=0;
+  const correct=qPool[qIndex];
+  const wrongs=shuffle(DATA.filter(d=>d.w!==correct.w)).slice(0,3);
+  const opts=shuffle([correct,...wrongs]);
+  quizEl.innerHTML=`
+    <div class="quiz-box">
+      <div class="quiz-q">這個字的意思是？ <b>${correct.w}</b> <span style="color:var(--muted);font-size:.85rem">(${correct.pos})</span></div>
+      <div class="quiz-hint">U${correct.u} · 選出正確的中文意思</div>
+      <div id="opts"></div>
+      <div class="quiz-foot">
+        <span class="score">得分：${qScore} / ${qTotal}</span>
+        <button class="next-btn hidden" id="next">下一題 →</button>
+      </div>
+    </div>`;
+  const optsBox=document.getElementById('opts');
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt'; b.textContent=o.m;
+    b.onclick=()=>{
+      if(optsBox.dataset.done) return;
+      optsBox.dataset.done='1'; qTotal++;
+      if(o.w===correct.w){b.classList.add('correct'); qScore++;}
+      else{b.classList.add('wrong');
+        [...optsBox.children].forEach(x=>{if(x.textContent===correct.m)x.classList.add('correct');});}
+      document.querySelector('.score').textContent=`得分：${qScore} / ${qTotal}`;
+      document.getElementById('next').classList.remove('hidden');
+    };
+    optsBox.appendChild(b);
+  });
+  document.getElementById('next').onclick=()=>{qIndex++; showQuestion();};
+}
+
+searchEl.oninput=()=>{ if(curMode==='quiz') startQuiz(); else render(); };
+render();
+</script>
+</body>
+</html>
