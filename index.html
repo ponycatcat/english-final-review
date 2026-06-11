@@ -129,6 +129,27 @@
   .note.add{background:rgba(255,107,107,.12); color:#ff9b9b}
   .note.fix{background:rgba(61,220,151,.14); color:var(--good)}
   .empty{text-align:center; color:var(--muted); padding:60px 20px; font-size:1rem; line-height:1.7}
+  /* review */
+  .scorecard{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:8px}
+  .stat{flex:1; min-width:100px; background:linear-gradient(155deg,var(--card),var(--card2)); border:1px solid var(--line); border-radius:14px; padding:14px; text-align:center}
+  .stat b{display:block; font-size:1.6rem; margin-bottom:2px}
+  .stat.good b{color:var(--good)} .stat.bad b{color:var(--bad)} .stat.score b{color:var(--warn)}
+  .stat span{color:var(--muted); font-size:.8rem}
+  .rev-h2{font-size:1.05rem; margin:26px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line)}
+  .wrongq{background:linear-gradient(155deg,var(--card),var(--card2)); border:1px solid var(--line); border-left:4px solid var(--bad); border-radius:12px; padding:14px 16px; margin-bottom:12px}
+  .qnum{display:inline-block; background:var(--bad); color:#fff; font-weight:800; font-size:.74rem; padding:2px 9px; border-radius:7px; margin-right:8px}
+  .qtext{font-size:.95rem; line-height:1.55; margin-bottom:10px}
+  .ans-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:9px}
+  .pill{font-size:.83rem; padding:5px 12px; border-radius:8px; font-weight:600}
+  .pill.you{background:rgba(255,107,107,.14); color:#ff9b9b; border:1px solid rgba(255,107,107,.4)}
+  .pill.cor{background:rgba(61,220,151,.16); color:var(--good); border:1px solid rgba(61,220,151,.45)}
+  .why{font-size:.88rem; line-height:1.6; color:#dfe5ff; background:rgba(108,140,255,.08); border-radius:9px; padding:9px 12px}
+  .why b{color:var(--warn)}
+  .ktable{width:100%; border-collapse:collapse; font-size:.84rem}
+  .ktable th,.ktable td{padding:7px 5px; text-align:center; border-bottom:1px solid var(--line)}
+  .ktable th{color:var(--muted); font-weight:600}
+  .ktable td.qc{color:var(--muted)}
+  .ok{color:var(--good); font-weight:700} .no{color:var(--bad); font-weight:700}
   .hidden{display:none !important}
   footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:40px; padding:0 20px}
 </style>
@@ -145,6 +166,7 @@
     <button class="mode-btn" data-mode="flip">🃏 翻牌</button>
     <button class="mode-btn" data-mode="quiz">📝 測驗</button>
     <button class="mode-btn" data-mode="wrong">❌ 錯題本<span class="badge hidden" id="wrongBadge">0</span></button>
+    <button class="mode-btn" data-mode="review">📄 考卷檢討</button>
   </div>
 </header>
 
@@ -164,6 +186,7 @@
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
   <div id="quiz" class="hidden"></div>
+  <div id="review" class="hidden"></div>
 </main>
 
 <footer>
@@ -247,6 +270,15 @@ const DATA = [
 {u:14,w:"phrase",pos:"v.",m:"以特定言辭表達、措辭",en:"Try to <b>phrase</b> your criticism in a positive way.",zh:"試著用正面的方式來措辭你的批評。"},
 {u:14,w:"partition",pos:"n.",m:"隔板、隔間牆",en:"A glass <b>partition</b> divides the office into two areas.",zh:"一道玻璃隔板把辦公室分成兩個區域。"},
 {u:14,w:"neutrality",pos:"n.",m:"中立、中立狀態",en:"The mediator kept strict <b>neutrality</b> during the dispute.",zh:"調解人在爭議中保持嚴格的中立。"},
+
+/* ===== 考卷重點：考過但原本沒收錄的新單字 ===== */
+{u:"exam",w:"comprise",pos:"v.",m:"由⋯⋯組成（be comprised of）",en:"The committee is <b>comprised</b> of ten senior managers.",zh:"這個委員會由十位資深經理組成。"},
+{u:"exam",w:"faux pas",pos:"n.",m:"失言、失禮的舉動（源自法文）",en:"Forgetting the client's name was an embarrassing <b>faux pas</b>.",zh:"忘記客戶的名字是個尷尬的失禮舉動。"},
+{u:"exam",w:"restructuring",pos:"n.",m:"（組織）重組",en:"After the <b>restructuring</b>, several departments were merged.",zh:"重組之後，好幾個部門被合併了。"},
+{u:"exam",w:"despite",pos:"prep.",m:"儘管（後面直接接名詞；≠ in spite，要加 of）",en:"She succeeded <b>despite</b> many difficulties.",zh:"儘管有許多困難，她還是成功了。"},
+{u:"exam",w:"breach",pos:"n.",m:"違反、（安全）漏洞（breach of security 資安漏洞）",en:"The data <b>breach</b> exposed millions of customer records.",zh:"這次資料外洩使數百萬筆顧客紀錄曝光。"},
+{u:"exam",w:"sensitive",pos:"adj.",m:"敏感的（sensitive to 對⋯⋯敏感）",en:"He is very <b>sensitive</b> to criticism about his work.",zh:"他對於針對他工作的批評非常敏感。"},
+{u:"exam",w:"in-house",pos:"adj.",m:"公司內部的（非外包）",en:"The company has its own <b>in-house</b> design team.",zh:"這家公司有自己的內部設計團隊。"},
 ];
 
 /* ---------- persistence ---------- */
@@ -260,14 +292,15 @@ const STAGE_SIZE=8;
 let curUnit='all', curMode='list', curStage='all', readFilter='all';
 
 /* ---------- elements ---------- */
-const grid=document.getElementById('grid'), quizEl=document.getElementById('quiz');
+const grid=document.getElementById('grid'), quizEl=document.getElementById('quiz'), reviewEl=document.getElementById('review');
 const tabsEl=document.getElementById('tabs'), countEl=document.getElementById('count');
 const searchEl=document.getElementById('search'), toolbar=document.getElementById('toolbar');
 const stagesEl=document.getElementById('stages'), barFill=document.getElementById('barFill'), ptext=document.getElementById('ptext');
 const wrongBadge=document.getElementById('wrongBadge');
 document.getElementById('total').textContent=DATA.length;
 
-const UNITS=[{u:'all',n:'全部'},{u:12,n:'U12 Data 數據'},{u:13,n:'U13 Culture 文化'},{u:14,n:'U14 Performance 績效'}];
+const UNITS=[{u:'all',n:'全部'},{u:12,n:'U12 Data 數據'},{u:13,n:'U13 Culture 文化'},{u:14,n:'U14 Performance 績效'},{u:'exam',n:'📝 考卷重點'}];
+function uLabel(u){return u==='exam'?'考卷':'U'+u;}
 UNITS.forEach((t,i)=>{
   const b=document.createElement('button');
   b.className='tab'+(i===0?' active':''); b.textContent=t.n; b.dataset.u=t.u;
@@ -312,12 +345,59 @@ function updateWrongBadge(){
 /* ---------- render dispatcher ---------- */
 function render(){
   updateWrongBadge();
-  quizEl.classList.add('hidden'); grid.classList.add('hidden');
+  quizEl.classList.add('hidden'); grid.classList.add('hidden'); reviewEl.classList.add('hidden');
+  if(curMode==='review'){ toolbar.classList.add('hidden'); countEl.textContent=''; reviewEl.classList.remove('hidden'); renderReview(); return; }
   if(curMode==='quiz'){ toolbar.classList.add('hidden'); quizEl.classList.remove('hidden'); startQuiz(); return; }
   if(curMode==='wrong'){ toolbar.classList.add('hidden'); grid.classList.remove('hidden'); renderWrong(); return; }
   // list or flip
   toolbar.classList.remove('hidden'); grid.classList.remove('hidden');
   renderStages(); renderProgress(); renderCards();
+}
+
+/* ---------- 考卷檢討 ---------- */
+const EXAM_WRONG=[
+ {q:1,you:'A · promoted',cor:'C · promising',t:'The commercial future of the company looks very ＿. (a. promoted　b. tactic　c. promising)',w:'<b>promising</b>＝有希望的、大有可為的。「公司的商業前景看起來很<b>有希望</b>」。promoted 是「被升職／推廣」。'},
+ {q:2,you:'B · projected',cor:'C · word-of-mouth',t:'We get most of our work through ＿ recommendations. (a. all in all　b. projected　c. word-of-mouth)',w:'<b>word-of-mouth</b>＝口耳相傳的。「大部分生意來自<b>口耳相傳</b>的推薦」。projected 是「預計的」。'},
+ {q:3,you:'A · disclosed',cor:'B · comprised',t:'The class is mainly ＿ of Italian and French students. (a. disclosed　b. comprised　c. informed)',w:'<b>be comprised of</b>＝由⋯⋯組成。「這個班級主要<b>由</b>義法學生<b>組成</b>」。disclosed 是「揭露」。'},
+ {q:4,you:'C · expenditure',cor:'B · faux pas',t:"I made some remark about his wife's family, and then realized I'd made a serious ＿. (a. cross section　b. faux pas　c. expenditure)",w:'<b>faux pas</b>（法文）＝失言、失禮。「說了些話後發現自己犯了嚴重的<b>失禮</b>」。expenditure 是「支出」。'},
+ {q:6,you:'C · refreshment',cor:'A · restructuring',t:'The company underwent ＿ and 1,500 workers lost their jobs. (a. restructuring　b. statisticulation　c. refreshment)',w:'<b>restructuring</b>＝（公司）重組。「公司進行<b>重組</b>，1,500 人失業」。refreshment 是「茶點」。'},
+ {q:8,you:'B · parlour',cor:'A · partition',t:'A ＿ is a wall or screen that separates one part of a room or vehicle from another. (a. partition　b. parlour　c. click-through)',w:'<b>partition</b>＝隔板、隔間牆。parlour 是「（美容院等）店舖」。'},
+ {q:10,you:'C · domineering',cor:'A · overriding',t:'The government recognized the ＿ need to maintain a stable currency. (a. overriding　b. transactional　c. domineering)',w:'<b>overriding</b>＝首要的、最重要的。domineering（盛氣凌人的）只形容人，不能修飾 need。'},
+ {q:13,you:'C · more or less',cor:'A · despite',t:'It is possible to lead happy and productive lives ＿ their loss. (a. despite　b. in spite　c. more or less)',w:'<b>despite</b>＝儘管（後面直接接名詞）。<b>陷阱：</b>in spite 一定要加 of（in spite of）才對。'},
+ {q:17,you:'B · encrypt',cor:'A · liaise',t:'The three groups will ＿ all with each other to help the child. (a. liaise　b. encrypt　c. delicate)',w:'<b>liaise</b>＝聯繫、聯絡合作。encrypt 是「加密」；delicate 是形容詞不能當動詞。'},
+ {q:20,you:'B · at short notice',cor:'A · the bottom line is',t:'You have all made compelling arguments, but ＿ that we need a viable, cost-effective solution... (a. the bottom line is　b. at short notice　c. rumour has it)',w:'<b>the bottom line is (that)</b>＝重點是、結論是。at short notice 是「臨時、短時間內」。'},
+ {q:22,you:'C · decor',cor:'B · tactics',t:'We should leave it to the military men to organize the ＿. (a. boot　b. tactics　c. decor)',w:'<b>tactics</b>＝戰術、策略。「把規劃<b>戰術</b>的工作交給軍人」。decor 是「室內裝潢」。'},
+ {q:25,you:'C · partition',cor:'A · lowdown',t:'Our fashion editor gives you the ＿ on winter coats for this season. (a. lowdown　b. perks　c. partition)',w:'<b>the low-down on</b>＝關於某事的內幕、最新情報。perks 是「福利」。'},
+ {q:26,you:'A · faux pas',cor:'C · constraints',t:'Financial ＿ on the company are preventing them from employing new staff. (a. faux pas　b. privacy policy　c. constraints)',w:'<b>constraints</b>＝限制（financial constraints＝財務限制，固定搭配）。'},
+ {q:28,you:'C · appraisal',cor:'A · breach',t:"British Airways is facing a record fine of £183m for last year's ＿ of its security systems. (a. breach　b. constraint　c. appraisal)",w:'<b>breach</b>＝違反、（安全）漏洞（breach of security＝資安漏洞）。appraisal 是「評估」。'},
+];
+const EXAM_KEY=[
+ [1,'A','C'],[2,'B','C'],[3,'A','B'],[4,'C','B'],[5,'C','C'],[6,'C','A'],[7,'B','B'],[8,'B','A'],
+ [9,'C','C'],[10,'C','A'],[11,'B','B'],[12,'B','B'],[13,'C','A'],[14,'B','B'],[15,'C','C'],[16,'A','A'],
+ [17,'B','A'],[18,'C','C'],[19,'B','B'],[20,'B','A'],[21,'A','A'],[22,'C','B'],[23,'B','B'],[24,'C','C'],
+ [25,'C','A'],[26,'A','C'],[27,'B','B'],[28,'C','A'],[29,'B','B'],[30,'A','A']
+];
+function renderReview(){
+  const wrong=EXAM_WRONG.map(x=>`
+    <div class="wrongq">
+      <div class="qtext"><span class="qnum">Q${x.q}</span>${x.t}</div>
+      <div class="ans-row"><span class="pill you">你選 ${x.you}</span><span class="pill cor">正解 ${x.cor}</span></div>
+      <div class="why">${x.w}</div>
+    </div>`).join('');
+  const half=Math.ceil(EXAM_KEY.length/2); let rows='';
+  const cell=r=>r?`<td class="qc">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[1]===r[2]?'ok':'no'}">${r[1]===r[2]?'✓':'✗'}</td>`:'<td></td><td></td><td></td><td></td>';
+  for(let i=0;i<half;i++) rows+=`<tr>${cell(EXAM_KEY[i])}${cell(EXAM_KEY[i+half])}</tr>`;
+  reviewEl.innerHTML=`
+    <div class="scorecard">
+      <div class="stat score"><b>16 / 30</b><span>總分（約 53 分）</span></div>
+      <div class="stat good"><b>16</b><span>答對</span></div>
+      <div class="stat bad"><b>14</b><span>答錯</span></div>
+    </div>
+    <p style="color:var(--muted);font-size:.86rem;margin:10px 2px">把錯的 14 題搞懂，這些單字也已加進「📝 考卷重點」單元，可以去翻牌和測驗練習 💪</p>
+    <div class="rev-h2">❌ 錯題詳解（14 題）</div>
+    ${wrong}
+    <div class="rev-h2">📋 完整答案對照表</div>
+    <table class="ktable"><thead><tr><th>題</th><th>你選</th><th>正解</th><th>✓</th><th>題</th><th>你選</th><th>正解</th><th>✓</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function renderStages(){
@@ -364,7 +444,7 @@ function renderCards(){
     }else{
       const c=document.createElement('div');
       c.className='card'+(isRead?' read':'');
-      c.innerHTML=`<span class="unit-badge">U${d.u}</span>
+      c.innerHTML=`<span class="unit-badge">${uLabel(d.u)}</span>
         <div class="word">${d.w}</div><div class="pos">${d.pos}</div>
         <div class="mean">${d.m}</div>${exHtml(d)}
         <button class="read-btn">${isRead?'✓ 已讀（點此取消）':'標記為已讀'}</button>`;
@@ -387,7 +467,7 @@ function renderWrong(){
   grid.innerHTML='';
   list.forEach(d=>{
     const c=document.createElement('div'); c.className='card';
-    c.innerHTML=`<span class="unit-badge">U${d.u}</span>
+    c.innerHTML=`<span class="unit-badge">${uLabel(d.u)}</span>
       <div class="word">${d.w}</div><div class="pos">${d.pos}</div>
       <div class="mean">${d.m}</div>${exHtml(d)}
       <button class="read-btn" style="border-color:var(--good);color:var(--good)">✓ 已訂正，移出錯題本</button>`;

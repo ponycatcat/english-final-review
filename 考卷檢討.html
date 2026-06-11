@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>考卷檢討 · Units 12–14</title>
+<style>
+  :root{
+    --bg:#0f1226; --card:#1e2247; --card2:#252a55; --accent:#6c8cff;
+    --good:#3ddc97; --warn:#ffcc66; --bad:#ff6b6b; --text:#eef1ff; --muted:#9aa3cf; --line:#2c326a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI","Microsoft JhengHei",system-ui,sans-serif;
+    background:linear-gradient(160deg,var(--bg),#0a0c1c 70%); color:var(--text); padding-bottom:60px}
+  header{padding:24px 20px 16px; max-width:900px; margin:0 auto}
+  h1{font-size:1.5rem; display:flex; align-items:center; gap:10px}
+  .sub{color:var(--muted); font-size:.9rem; margin-top:6px}
+  .scorecard{display:flex; gap:14px; flex-wrap:wrap; margin-top:18px}
+  .stat{flex:1; min-width:120px; background:linear-gradient(155deg,var(--card),var(--card2));
+    border:1px solid var(--line); border-radius:14px; padding:16px; text-align:center}
+  .stat b{display:block; font-size:1.8rem; margin-bottom:2px}
+  .stat.good b{color:var(--good)} .stat.bad b{color:var(--bad)} .stat.score b{color:var(--warn)}
+  .stat span{color:var(--muted); font-size:.82rem}
+  main{max-width:900px; margin:0 auto; padding:0 20px}
+  h2{font-size:1.15rem; margin:30px 0 14px; padding-bottom:8px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px}
+  .wrong{background:linear-gradient(155deg,var(--card),var(--card2)); border:1px solid var(--line);
+    border-left:4px solid var(--bad); border-radius:12px; padding:16px 18px; margin-bottom:14px}
+  .qnum{display:inline-block; background:var(--bad); color:#fff; font-weight:800; font-size:.78rem;
+    padding:2px 9px; border-radius:7px; margin-right:8px}
+  .qtext{font-size:.98rem; line-height:1.55; margin-bottom:12px}
+  .qtext u{color:var(--warn); text-underline-offset:3px}
+  .ans-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px}
+  .pill{font-size:.85rem; padding:5px 12px; border-radius:8px; font-weight:600}
+  .pill.you{background:rgba(255,107,107,.14); color:#ff9b9b; border:1px solid rgba(255,107,107,.4)}
+  .pill.correct{background:rgba(61,220,151,.16); color:var(--good); border:1px solid rgba(61,220,151,.45)}
+  .why{font-size:.9rem; line-height:1.6; color:#dfe5ff; background:rgba(108,140,255,.08);
+    border-radius:9px; padding:10px 12px}
+  .why b{color:var(--warn)}
+  /* answer key table */
+  table{width:100%; border-collapse:collapse; font-size:.86rem; margin-top:6px}
+  th,td{padding:8px 6px; text-align:center; border-bottom:1px solid var(--line)}
+  th{color:var(--muted); font-weight:600}
+  td.q{color:var(--muted)}
+  .ok{color:var(--good); font-weight:700} .no{color:var(--bad); font-weight:700}
+  /* vocab */
+  .vgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px}
+  .vcard{background:linear-gradient(155deg,var(--card),var(--card2)); border:1px solid var(--line);
+    border-radius:11px; padding:13px 15px}
+  .vcard b{color:var(--warn); font-size:1rem} .vcard .vm{color:var(--text); font-size:.88rem; margin-top:3px; line-height:1.5}
+  .vcard .vt{color:var(--muted); font-size:.8rem; margin-top:5px}
+  .toolbar{max-width:900px;margin:18px auto 0;padding:0 20px;display:flex;gap:10px;flex-wrap:wrap}
+  .btn{background:var(--accent);color:#fff;border:none;padding:9px 18px;border-radius:10px;cursor:pointer;font-weight:600;font-size:.88rem;text-decoration:none;display:inline-block}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
+  @media print{body{background:#fff;color:#000}.btn,.toolbar{display:none}.wrong,.vcard,.stat{border:1px solid #ccc;background:#fff}.why{background:#f3f3f3}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📝 考卷檢討 · Units 12–14</h1>
+  <div class="sub">姓名：黃宥僾　·　30 題單字選擇題　·　把錯的 14 題搞懂，下次就穩了 💪</div>
+  <div class="scorecard">
+    <div class="stat score"><b>16 / 30</b><span>總分（約 53 分）</span></div>
+    <div class="stat good"><b>16</b><span>答對</span></div>
+    <div class="stat bad"><b>14</b><span>答錯</span></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <a class="btn" href="index.html">← 回複習網站</a>
+  <button class="btn ghost" onclick="window.print()">🖨️ 列印 / 存成 PDF</button>
+</div>
+
+<main>
+  <h2>❌ 錯題詳解（14 題）</h2>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q1</span>The commercial future of the company looks very ＿＿. (a. promoted　b. tactic　c. promising)</div>
+    <div class="ans-row"><span class="pill you">你選 A · promoted</span><span class="pill correct">正解 C · promising</span></div>
+    <div class="why"><b>promising</b>＝有希望的、大有可為的。「公司的商業前景看起來很<b>有希望</b>」。promoted 是「被升職／被推廣」，語意不合。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q2</span>We get most of our work through ＿＿ recommendations. (a. all in all　b. projected　c. word-of-mouth)</div>
+    <div class="ans-row"><span class="pill you">你選 B · projected</span><span class="pill correct">正解 C · word-of-mouth</span></div>
+    <div class="why"><b>word-of-mouth</b>＝口耳相傳的。「我們大部分的生意來自<b>口耳相傳</b>的推薦」。projected 是「預計的」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q3</span>The class is mainly ＿＿ of Italian and French students. (a. disclosed　b. comprised　c. informed)</div>
+    <div class="ans-row"><span class="pill you">你選 A · disclosed</span><span class="pill correct">正解 B · comprised</span></div>
+    <div class="why"><b>be comprised of</b>＝由⋯⋯組成（固定用法）。「這個班級主要<b>由</b>義大利和法國學生<b>組成</b>」。disclosed 是「揭露」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q4</span>I made some remark about his wife's family, and then realized I'd made a serious ＿＿. (a. cross section　b. faux pas　c. expenditure)</div>
+    <div class="ans-row"><span class="pill you">你選 C · expenditure</span><span class="pill correct">正解 B · faux pas</span></div>
+    <div class="why"><b>faux pas</b>（源自法文）＝失言、失禮的舉動。「我對他太太的家人說了些話，然後發現自己犯了嚴重的<b>失禮</b>」。expenditure 是「支出」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q6</span>The company underwent ＿＿ and 1,500 workers lost their jobs. (a. restructuring　b. statisticulation　c. refreshment)</div>
+    <div class="ans-row"><span class="pill you">你選 C · refreshment</span><span class="pill correct">正解 A · restructuring</span></div>
+    <div class="why"><b>restructuring</b>＝（組織）重組。「公司進行<b>重組</b>，1,500 名員工失去工作」。refreshment 是「茶點」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q8</span>A ＿＿ is a wall or screen that separates one part of a room or vehicle from another. (a. partition　b. parlour　c. click-through)</div>
+    <div class="ans-row"><span class="pill you">你選 B · parlour</span><span class="pill correct">正解 A · partition</span></div>
+    <div class="why"><b>partition</b>＝隔板、隔間牆。「<b>隔板</b>是用來分隔房間或車輛某部分的牆或屏風」。parlour 是「（美容院等）店舖」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q10</span>The government recognized the ＿＿ need to maintain a stable currency. (a. overriding　b. transactional　c. domineering)</div>
+    <div class="ans-row"><span class="pill you">你選 C · domineering</span><span class="pill correct">正解 A · overriding</span></div>
+    <div class="why"><b>overriding</b>＝首要的、最重要的。「政府體認到維持貨幣穩定的<b>首要</b>需求」。domineering 是「盛氣凌人的」（形容人），不能修飾 need。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q13</span>It is possible to lead happy and productive lives ＿＿ their loss. (a. despite　b. in spite　c. more or less)</div>
+    <div class="ans-row"><span class="pill you">你選 C · more or less</span><span class="pill correct">正解 A · despite</span></div>
+    <div class="why"><b>despite</b>＝儘管（介系詞，後面直接接名詞）。「<b>儘管</b>失去了他們，仍能過著快樂而充實的生活」。<b>陷阱：</b>in spite 必須加 of（in spite of）才成立，單獨的 in spite 是錯的。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q17</span>The three groups will ＿＿ all with each other to help the child. (a. liaise　b. encrypt　c. delicate)</div>
+    <div class="ans-row"><span class="pill you">你選 B · encrypt</span><span class="pill correct">正解 A · liaise</span></div>
+    <div class="why"><b>liaise</b>＝聯繫、聯絡合作。「這三個團體將彼此<b>聯繫合作</b>來幫助這個孩子」。encrypt 是「加密」；delicate 是形容詞不能當動詞。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q20</span>You have all made compelling arguments, but ＿＿ that we need a viable, cost-effective solution... (a. the bottom line is　b. at short notice　c. rumour has it)</div>
+    <div class="ans-row"><span class="pill you">你選 B · at short notice</span><span class="pill correct">正解 A · the bottom line is</span></div>
+    <div class="why"><b>the bottom line is (that)</b>＝重點是、結論是。「但<b>重點是</b>我們需要一個可行又划算的解決方案」。at short notice 是「臨時、短時間內」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q22</span>We should leave it to the military men to organize the ＿＿. (a. boot　b. tactics　c. decor)</div>
+    <div class="ans-row"><span class="pill you">你選 C · decor</span><span class="pill correct">正解 B · tactics</span></div>
+    <div class="why"><b>tactics</b>＝戰術、策略。「我們應該把規劃<b>戰術</b>的工作交給軍人」。decor 是「室內裝潢」，與軍人語境不合。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q25</span>Our fashion editor gives you the ＿＿ on winter coats for this season. (a. lowdown　b. perks　c. partition)</div>
+    <div class="ans-row"><span class="pill you">你選 C · partition</span><span class="pill correct">正解 A · lowdown</span></div>
+    <div class="why"><b>the low-down on</b>＝關於某事的內幕、最新重要情報。「我們的時尚編輯給你本季冬季大衣的<b>第一手情報</b>」。perks 是「福利」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q26</span>Financial ＿＿ on the company are preventing them from employing new staff. (a. faux pas　b. privacy policy　c. constraints)</div>
+    <div class="ans-row"><span class="pill you">你選 A · faux pas</span><span class="pill correct">正解 C · constraints</span></div>
+    <div class="why"><b>constraints</b>＝限制、約束（financial constraints＝財務限制，固定搭配）。「公司的<b>財務限制</b>使他們無法雇用新員工」。</div>
+  </div>
+
+  <div class="wrong">
+    <div class="qtext"><span class="qnum">Q28</span>British Airways is facing a record fine of £183m for last year's ＿＿ of its security systems. (a. breach　b. constraint　c. appraisal)</div>
+    <div class="ans-row"><span class="pill you">你選 C · appraisal</span><span class="pill correct">正解 A · breach</span></div>
+    <div class="why"><b>breach</b>＝違反、（安全）漏洞（breach of security＝資安漏洞）。「英國航空因去年的安全系統<b>漏洞</b>而面臨 1.83 億英鎊的破紀錄罰款」。appraisal 是「評估」。</div>
+  </div>
+
+  <h2>📋 完整答案對照表</h2>
+  <table id="keyTable">
+    <thead><tr><th>題</th><th>你的答案</th><th>正解</th><th>結果</th><th>題</th><th>你的答案</th><th>正解</th><th>結果</th></tr></thead>
+    <tbody id="keyBody"></tbody>
+  </table>
+
+  <h2>🔑 必背重點單字（這次考的）</h2>
+  <div class="vgrid" id="vgrid"></div>
+</main>
+
+<script>
+// [題號, 你的答案, 正解]
+const KEY=[
+ [1,'A','C'],[2,'B','C'],[3,'A','B'],[4,'C','B'],[5,'C','C'],[6,'C','A'],[7,'B','B'],[8,'B','A'],
+ [9,'C','C'],[10,'C','A'],[11,'B','B'],[12,'B','B'],[13,'C','A'],[14,'B','B'],[15,'C','C'],[16,'A','A'],
+ [17,'B','A'],[18,'C','C'],[19,'B','B'],[20,'B','A'],[21,'A','A'],[22,'C','B'],[23,'B','B'],[24,'C','C'],
+ [25,'C','A'],[26,'A','C'],[27,'B','B'],[28,'C','A'],[29,'B','B'],[30,'A','A']
+];
+const body=document.getElementById('keyBody');
+const half=Math.ceil(KEY.length/2);
+for(let i=0;i<half;i++){
+  const L=KEY[i], R=KEY[i+half];
+  const cell=(r)=>r?`<td class="q">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[1]===r[2]?'ok':'no'}">${r[1]===r[2]?'✓':'✗'}</td>`:'<td></td><td></td><td></td><td></td>';
+  const tr=document.createElement('tr'); tr.innerHTML=cell(L)+cell(R); body.appendChild(tr);
+}
+
+const VOCAB=[
+ ['promising','有希望的、大有可為的','adj.'],
+ ['word-of-mouth','口耳相傳的','adj.'],
+ ['comprise (be comprised of)','由⋯⋯組成','v.'],
+ ['faux pas','失言、失禮的舉動','n.'],
+ ['restructuring','（組織）重組','n.'],
+ ['partition','隔板、隔間牆','n.'],
+ ['overriding','首要的、最重要的','adj.'],
+ ['despite','儘管（+名詞）','prep.'],
+ ['liaise','聯繫、聯絡合作','v.'],
+ ['the bottom line (is)','重點是、結論是','phr.'],
+ ['tactics','戰術、策略','n.'],
+ ['low-down (the low-down on)','內幕、最新情報','n.'],
+ ['constraint(s)','限制、約束','n.'],
+ ['breach','違反、（安全）漏洞','n.'],
+ ['sensitive (to)','敏感的','adj.'],
+ ['in-house','公司內部的','adj.'],
+ ['demographics','人口統計資料','n.']
+];
+const vg=document.getElementById('vgrid');
+VOCAB.forEach(v=>{const d=document.createElement('div');d.className='vcard';
+  d.innerHTML=`<b>${v[0]}</b> <span class="vt">${v[2]}</span><div class="vm">${v[1]}</div>`;vg.appendChild(d);});
+</script>
+</body>
+</html>
